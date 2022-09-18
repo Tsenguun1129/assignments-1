@@ -5,7 +5,7 @@ int main () {
     char word [15];
     char letter [15];
     printf("Enter your word: ");
-    gets(word);
+    scanf("%s", word);
 
     int shift; 
     printf ("Enter your shift: ");
