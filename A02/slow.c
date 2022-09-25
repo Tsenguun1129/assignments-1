@@ -36,7 +36,7 @@ int main() {
     long_words [number_of_characters * (pause  + 1)] = '\0';
   }
 
-  printf("%s", long_words);
+  printf("%s\n", long_words);
  
 
 
