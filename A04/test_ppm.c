@@ -15,7 +15,11 @@ int main() {
     }
     printf("\n");
   }
+  for (int i = 0; i < h; i++) {
+    free(example[i]);
+  }
   free(example);
+  
   
   return 0;
 }
