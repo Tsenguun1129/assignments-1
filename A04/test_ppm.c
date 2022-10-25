@@ -7,8 +7,25 @@ int main() {
   int w, h; 
   struct ppm_pixel** example;
   example = read_ppm_2d ("feep-raw.ppm", &w, &h);
+<<<<<<< HEAD
   free(example);
   
+=======
+  printf("%s", "Opening file: feep-raw.ppm\n");
+  for (int i = 0; i<h; i++) {
+    for (int j = 0; j<w; j++) {
+      struct ppm_pixel a = example[i][j];
+      printf("(%u, %u, %u) ", a.red, a.green, a.blue);
+    }
+    printf("\n");
+  }
+  for (int i = 0; i < h; i++) {
+    free(example[i]);
+  }
+  free(example);
+  
+  
+>>>>>>> a22902031aab8e10205b29fde2d40807a021c17c
   return 0;
 }
 

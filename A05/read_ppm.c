@@ -5,42 +5,83 @@
 
 // implement one
 
-struct ppm_pixel* read_ppm(const char* filename, int* w, int* h) {
-  return NULL;
+struct ppm_pixel *read_ppm(const char *filename, int *w, int *h)
+{
+     FILE *fp;
+     fp = fopen(filename, "r");
+     if (fp == NULL)
+     {
+          printf("Error: unable to open file %s\n", filename);
+          return NULL;
+     }
+
+     char image[100];
+     char c[2];
+
+     fgets(image, 100, fp);
+     sscanf(image, "%s", c);
+
+     if (c[0] != 'p' || c[1] != '6')
+     {
+          printf("error");
+          return NULL;
+     }
+
+     fgets(image, 100, fp);
+     while (image[0] == '#')
+     {
+          fgets(image, 100, fp);
+     }
+
+     sscanf(image, "%d %d", w, h);
+     struct ppm_pixel *array = malloc(sizeof(struct ppm_pixel) * (*w) * (*h));
+     if (!array)
+     {
+          printf("unable to allocate memory\n");
+          return NULL;
+     }
+     fgets(image, 100, fp);
+     fread(array, sizeof(struct ppm_pixel), (*w) * (*h), fp);
+     fclose(fp);
+
+     return array;
 }
 
-struct ppm_pixel** read_ppm_2d(const char* filename, int* w, int* h) {
-  FILE *infile;
-char line [1000];
-char next_line [1000];
+// struct ppm_pixel **read_ppm_2d(const char *filename, int *w, int *h)
+// {
+//      FILE *infile;
+//      char line[1000];
+//      char next_line[1000];
 
-infile = fopen (filename, "r"); 
+//      infile = fopen(filename, "r");
 
-if(infile == NULL) {
-     printf("Error: unable to open file %s\n", filename);
-}
+//      if (infile == NULL)
+//      {
+//           printf("Error: unable to open file %s\n", filename);
+//      }
 
+//      fgets(line, sizeof(line), infile);
 
-fgets(line, sizeof(line), infile); 
+//      if (line[0] != 'P' && line[1] != '6')
+//      {
+//           printf("Format is incorrect");
+//           return NULL;
+//      }
 
-if (line[0] != 'P' && line[1] != '6') {
-     printf("Format is incorrect");
-     return NULL;
-} 
+//      fgets(next_line, sizeof(next_line), infile);
 
-fgets (next_line, sizeof(next_line), infile);
+//      while (next_line[0] == '#')
+//      {
+//           fgets(next_line, sizeof(next_line), infile);
+//      }
 
-while (next_line[0] == '#') {
-     fgets (next_line, sizeof(next_line), infile);
-}
+//      sscanf(next_line, "%d %d", w, h);
 
-     sscanf(next_line, "%d %d", w, h);
+//      struct ppm_pixel **a;
+//      a = (struct ppm_pixel **)malloc(sizeof(struct ppm_pixel *) * *h);
 
-    
-struct ppm_pixel **a; 
-a = (struct ppm_pixel **) malloc(sizeof(struct ppm_pixel*) * *h);
-
-for (int i = 0; i< *w * *h; i++) {
-     a [i] = (struct ppm_pixel *) malloc (sizeof(struct ppm_pixel) * *w);
-} 
-}
+//      for (int i = 0; i < *w * *h; i++)
+//      {
+//           a[i] = (struct ppm_pixel *)malloc(sizeof(struct ppm_pixel) * *w);
+//      }
+// }

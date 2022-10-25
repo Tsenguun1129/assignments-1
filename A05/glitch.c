@@ -18,7 +18,7 @@ int main(int argc, char **argv)
   }
   
   pixels = read_ppm(filename, &w, &h); 
-  printf("8d\n", h);
+  printf("%d\n", h);
   if (pixels == NULL)
   {
     printf("Error, can't open file\n");
@@ -28,7 +28,7 @@ int main(int argc, char **argv)
   
   for (int i = 0; i < h; i++) {
     for (int j = 0; j < w; j++) {
-      struct ppm_pixel p = 
+      struct ppm_pixel p = pixels[i*w +j];
       p.red = p.red << (rand() % 2);
       p.green = p.blue << (rand() % 2);
       p.blue = p.green << (rand() % 2);
