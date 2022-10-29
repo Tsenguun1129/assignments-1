@@ -33,7 +33,6 @@ int main(int argc, char **argv)
       p.green = p.blue << (rand() % 2);
       p.blue = p.green << (rand() % 2);
       pixels [i*w + j] = p;
-
     }
   }
 

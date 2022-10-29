@@ -14,13 +14,16 @@ void write_ppm(const char* filename, struct ppm_pixel* pixels, int w, int h) {
     }
 
     fprintf(fp, "P6 \n#\n%d %d \n255 \n", w, h);
-    for (int i = 0; i < h; i++) {
-        for (int j = 0; j < w; j++) {
-            fwrite (&pixels[i*w + j].red, 1, 1, fp);
-            fwrite (&pixels[i*w + j].blue, 1, 1, fp);
-            fwrite (&pixels[i*w + j].green, 1, 1, fp);
-        }
-    }
+
+    fwrite(pixels, 1, sizeof(struct ppm_pixel)* w*h, fp);
+    // for (int i = 0; i < h; i++) {
+    //     for (int j = 0; j < w; j++) {
+    //         // fwrite (&pixels[i*w + j].red, 1, 1, fp);
+    //         // fwrite (&pixels[i*w + j].blue, 1, 1, fp);
+    //         // fwrite (&pixels[i*w + j].green, 1, 1, fp);
+
+    //     }
+    // }
     fclose(fp);
 
 }
