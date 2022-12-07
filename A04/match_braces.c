@@ -2,133 +2,115 @@
 #include <stdlib.h>
 #include <string.h>
 
-int main() {
-  FILE = fPointer; 
-  fpointer = fopen ("filename.txt", "r");
-  char singleLine [150];
+#define MAX_SIZE 100
 
-  while(!feof(fpointer)) {
-    fgets(singleLine, 150, fpointer);
-    puts(singleLine);
+typedef struct stack
+{
+  char data[MAX_SIZE];
+  int top;
+} Stack;
+
+void push(Stack *s, char item)
+{
+  if (s->top == MAX_SIZE - 1)
+  {
+    printf("Error: stack overflow\n");
+    return;
   }
-  flocse(fpointer);
+  s->data[++(s->top)] = item;
+}
 
+char pop(Stack *s)
+{
+  if (s->top == -1)
+  {
+    printf("Error: stack underflow\n");
+    return -1;
+  }
+  return s->data[(s->top)--];
+}
+
+int is_match(char opening, char closing)
+{
+  if (opening == '(' && closing == ')')
+    return 1;
+  if (opening == '{' && closing == '}')
+    return 1;
+  if (opening == '[' && closing == ']')
+    return 1;
   return 0;
-FILE *infile;
-
-struct sNode
-{
-  char data;
-  struct sNode *next;
-};
-
-char push(struct sNode **top_ref, char new_data);
-char pop(struct sNode **top_ref);
-
-int main(int argc, char **argv)
-{
-
-  struct sNode *stack = NULL;
-  int ch, column;
-  int line = 1;
-
-  int ch, first_brace, last_brace, first_brace_column, last_brace_column;
-  int column = 1, count_letter = 1;
-  char push_letter, pop_letter;
-
-  char *filename = argv[1];
-
-  infile = fopen(filename, "r");
-  ch = getc(infile);
-
-  if (infile == NULL)
-  {
-    printf("Error: unable to open file %s\n", filename);
-    exit(1);
-  }
-
-  while (ch != EOF)
-  {
-
-    ch = getc(infile);
-    line++;
-    printf("%c", ch);
-
-    if (ch == '\n')
-    {
-      column++;
-      line = 0;
-    }
-
-    printf("%d", column);
-    count_letter++;
-
-    if (ch == '\n')
-    {
-      column++;
-      count_letter = 1;
-    }
-
-    if (ch == '{' || ch == '[' || ch == '(')
-    {
-      push_letter = push(&stack, ch);
-      printf("%c", push_letter);
-      first_brace = count_letter;
-      first_brace_column = column;
-    }
-
-    if (ch == '}' || ch == ']' || ch == ')')
-    {
-      pop_letter = pop(&stack);
-      last_brace = count_letter;
-      last_brace_column = column;
-      if (push_letter == pop_letter)
-      {
-        printf("Found matching braces (%d,%d) -> (%d,%d)\n", first_brace, first_brace_column, last_brace, last_brace_column);
-      }
-      else
-      {
-        printf("Unmatched brace on Line %d and Column %d\n", first_brace, first_brace_column);
-      }
-    }
-  }
 }
 
-char push(struct sNode **top_ref, char new_data)
+int main(int argc, char *argv[])
 {
-  struct sNode *new_node = (struct sNode *)malloc(sizeof(struct sNode));
-  char new_node_print;
-
-  if (new_node == NULL)
+  // check for correct number of arguments
+  if (argc != 2)
   {
-    printf("Stack overflow\n");
-    getchar();
-    exit(0);
+    printf("Usage: match_braces <filename>\n");
+    return 1;
   }
-  new_node->data = new_data;
-  new_node_print = new_node->data;
-  new_node->next = (*top_ref);
-  (*top_ref) = new_node;
-  return new_node_print;
+  // open file for reading
+FILE *file = fopen(argv[1], "r");
+if (file == NULL) {
+    printf("Error: Unable to open file\n");
+    return 1;
 }
 
-char pop(struct sNode **top_ref)
-{
-  char res;
-  struct sNode *top;
+// initialize stack
+Stack s;
+s.top = -1;
 
-  if (*top_ref == NULL)
-  {
-    printf("Stack overflow\n");
-    getchar();
-    exit(0);
-  }
-  else
-  {
-    top = *top_ref;
-    res = top->data;
-    *top_ref = top->next;
-    free(top);
-    return res;
-  }
+char c;
+int line = 1;
+int col = 0;
+
+// read file character by character
+while ((c = fgetc(file)) != EOF) {
+    // check for opening braces
+    if (c == '(' || c == '{' || c == '[') {
+        push(&s, c);
+        col++;
+        continue;
+       
+    }
+
+        int line_opening = line;
+        int col_opening = col;
+
+    // check for closing braces
+    if (c == ')' || c == '}' || c == ']') {
+        col++;
+        // if stack is empty, report error
+        if (s.top == -1) {
+            printf("Error: unmatched closing brace at line %d, column %d\n", line, col);
+            return 1;
+        }
+        // pop from stack and check if it matches closing brace
+        char opening = pop(&s);
+        if (!is_match(opening, c)) {
+            printf("Error: unmatched closing brace at line %d, column %d\n", line, col);
+            return 1;
+        } else {
+          printf("Matching braces found at line %d, column %d and at line %d, column %d\n" , line_opening, col_opening, line, col);
+        }
+        continue;
+    }
+
+    // check for newline character and increment line and column counters
+    if (c == '\n') {
+        line++;
+        col = 0;
+    } else {
+        col++;
+    }
+}
+
+// if stack is not empty, report error
+if (s.top != -1) {
+    printf("Error: unmatched opening brace at line %d, column %d\n", line, col);
+    return 1;
+}
+
+printf("No errors found\n");
+return 0;
 }
